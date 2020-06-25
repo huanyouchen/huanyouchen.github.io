@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="python，Java，hacker"><title>转载-给hexo的maupassant主题添加tags页面 | 幻悠尘的小窝</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-118684665-1','auto');ga('send','pageview');
+</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + '6630ddc4c60afb15b88971c6ab1d81a8';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">转载-给hexo的maupassant主题添加tags页面</h1><a id="logo" href="/.">幻悠尘的小窝</a><p class="description">The quieter you become,the more you are able to hear.</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/projects/"><i class="fa fa-github"> 作品</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/message-board/"><i class="fa fa-comments"> 留言</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-4-4"><div class="content_container"><div class="post"><h1 class="post-title">转载-给hexo的maupassant主题添加tags页面</h1><div class="post-content"><p><strong>注：本文为转载，原文作者hushhw，原文链接：<a href="https://hushhw.cn/posts/tool/5e14d0e.html" target="_blank" rel="noopener">https://hushhw.cn/posts/tool/5e14d0e.html</a> 感谢原作者提供的方法，文章版权归原作者所有。</strong></p>
+<p>博客使用的是maupassant主题， 原本设计的文章标签是放在右边侧边栏的，但是当文章写多了以后，标签也会很多，侧边栏的标签区域就显得很多很乱。为了美观些，对原主题修改一下，重新建立一个标签页面专门展示标签，然后把侧边栏的标签区域删掉。</p>
+<a id="more"></a>
+
+<p>在本地hexo目录的<code>source</code>文件夹下，新建tags文件夹，进入tags文件夹，并新建index.md文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd hexo&#x2F;blog&#x2F;source&#x2F;</span><br><span class="line">mkdir tags</span><br><span class="line">touch index.md</span><br></pre></td></tr></table></figure>
+<p>打开index.md，在该文件中写入front-matter，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">layout: tagcloud</span><br><span class="line">title: 标签列表</span><br><span class="line">type: tags</span><br><span class="line">comments: false</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>进入maupassant主题目录下的<code>layout</code>文件夹，新建<code>tagcloud.pug</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd hexo&#x2F;blog&#x2F;themes&#x2F;maupassant&#x2F;layout&#x2F;</span><br><span class="line">touch tagcloud.pug</span><br></pre></td></tr></table></figure>
+
+<p>添加如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">extends base</span><br><span class="line">block title</span><br><span class="line">  title&#x3D; page.title + &#39; | &#39; + config.title</span><br><span class="line">block content</span><br><span class="line">  .post</span><br><span class="line">    .post-content</span><br><span class="line">      .tagcloud</span><br><span class="line">        for tag in site.tags.toArray()</span><br><span class="line">          a( href&#x3D;&#39;&#x2F;tags&#x2F;#&#39; + tag.name title&#x3D;tag.name rel&#x3D; tag.length ) #&#123;tag.name&#125;</span><br><span class="line"></span><br><span class="line">      for tag in site.tags.toArray()</span><br><span class="line">        .one-tag-list</span><br><span class="line">          span(class&#x3D;&#39;fa fa-tag tag-name&#39; id&#x3D;tag.name) </span><br><span class="line">            span(class&#x3D;&quot;tag-text&quot;) #&#123;tag.name&#125;</span><br><span class="line">          for post in tag.posts.toArray()</span><br><span class="line">            .post-preview</span><br><span class="line">              a( href&#x3D;config.root + post.path title&#x3D;post.title ) #&#123;post.title&#125;</span><br><span class="line"></span><br><span class="line">  if page.donate</span><br><span class="line">      iframe(src&#x3D;&#39;&#x2F;donate&#x2F;?AliPayQR&#x3D;&#39; + theme.donate.alipay_qr + &#39;&amp;WeChatQR&#x3D;&#39; + theme.donate.wechat_qr + &#39;&amp;GitHub&#x3D;&#39; + theme.donate.github + &#39;&amp;BTCQR&#x3D;&#39; + theme.donate.btc_qr + &#39;&amp;BTCKEY&#x3D;&#39;+ theme.donate.btc_key + &#39;&amp;PayPal&#x3D;&#39; + theme.donate.paypal_url, style&#x3D;&#39;overflow-x:hidden; overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;&#39;, frameborder&#x3D;&#39;0&#39;, scrolling&#x3D;&#39;no&#39;)</span><br><span class="line">  if page.comments</span><br><span class="line">    include _partial&#x2F;comments.pug</span><br></pre></td></tr></table></figure>
+
+<p>添加样式，在hexo/blog/themes/maupassant/source/css文件夹下找到<code>style.scss</code>， 在<code>.post -&gt; .post-content</code>中，添加.tagcloud和.one-tag-list中的scss代码,如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">.post &#123;</span><br><span class="line"></span><br><span class="line">    .post-content &#123;</span><br><span class="line">        </span><br><span class="line">        .tagcloud &#123;</span><br><span class="line">            margin: 0 0 30px 0;</span><br><span class="line">            a &#123;</span><br><span class="line">                padding:0px 5px;</span><br><span class="line">                margin:3px;</span><br><span class="line">                display: inline-block;</span><br><span class="line">                border: 1px solid rgba(99, 96, 96, 0.8);</span><br><span class="line">                 border-radius: 999em;</span><br><span class="line">                 color: #aaa;</span><br><span class="line">                 &amp;:hover &#123;</span><br><span class="line">                    color: #fff;</span><br><span class="line">                     border: 1px solid #1a8d76;</span><br><span class="line">                     background: #1a8a76;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        .one-tag-list &#123;</span><br><span class="line">            margin: 30px 0;</span><br><span class="line">            .tag-name &#123;</span><br><span class="line">                .tag-text&#123;</span><br><span class="line">                    margin-left: 5px;</span><br><span class="line">                     font-size: 16px;</span><br><span class="line">                     font-weight: bold;</span><br><span class="line">                  &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打开主题的_config.yml文件，在menu菜单中，添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line"></span><br><span class="line">  - page: tags</span><br><span class="line">    directory: tags&#x2F;</span><br><span class="line">    icon: fa-tags</span><br></pre></td></tr></table></figure>
+
+<p>并且在widgets中，注释掉右边侧边栏的tags挂件：</p>
+<p>widgets:<br>  # - tag</p>
+<p>现在全部修改完成了，用<code>hexo g</code>生成tags页面，然后用<code>hexo s</code>本地预览下，如果顺利修改完成，最后用<code>hexo d</code>发布。</p>
+<p>原文作者：hushhw<br>原文链接：<a href="https://hushhw.cn/posts/tool/5e14d0e.html" target="_blank" rel="noopener">https://hushhw.cn/posts/tool/5e14d0e.html</a> </p>
+</div></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://huanyouchen.github.io/2019/03/22/add-tags-pages-to-hexo-maupassant-theme/';
+    this.page.identifier = '2019/03/22/add-tags-pages-to-hexo-maupassant-theme/';
+    this.page.title = '转载-给hexo的maupassant主题添加tags页面';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//huanyouchen-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//huanyouchen-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://huanyouchen-blog.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div><div class="pure-u-1 pure-u-md-4-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">幻悠尘的小窝.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

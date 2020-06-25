@@ -1,0 +1,12 @@
+# hexo robots.txt
+User-agent: *
+Allow: /
+
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /vendors/
+Disallow: /fancybox/
+
+Sitemap: http://huanyouchen.github.io/sitemap.xml
+Sitemap: http://huanyouchen.github.io/baidusitemap.xml

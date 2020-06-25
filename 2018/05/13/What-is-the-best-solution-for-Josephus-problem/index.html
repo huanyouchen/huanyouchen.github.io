@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="python，Java，hacker"><title>约瑟夫问题求解及优化 | 幻悠尘的小窝</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-118684665-1','auto');ga('send','pageview');
+</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + '6630ddc4c60afb15b88971c6ab1d81a8';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">约瑟夫问题求解及优化</h1><a id="logo" href="/.">幻悠尘的小窝</a><p class="description">The quieter you become,the more you are able to hear.</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/projects/"><i class="fa fa-github"> 作品</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/message-board/"><i class="fa fa-comments"> 留言</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-4-4"><div class="content_container"><div class="post"><h1 class="post-title">约瑟夫问题求解及优化</h1><div class="post-content"><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>在一间房间总共有n个人，给定一个数k，然后按照如下规则去杀人：</p>
+<ol>
+<li>所有人围成一个圆圈，按顺时针依次给所有人编号：1, 2, 3…, n</li>
+<li>由编号1开始报数，按顺时针方向，报到数字k的人将被杀掉</li>
+<li>被杀掉的人从房间内被移走，从被杀的下一个人重新由1开始报数</li>
+<li>报到数字k的人再次被杀掉，再移走，再次开始报数，一直杀到最后剩余一个人</li>
+</ol>
+<p>最后剩余的人活命。</p>
+<p>那么，给定了 n 和 k，最后活下来的人的编号是几？</p>
+<a id="more"></a>
+
+<p><strong>思路一</strong></p>
+<p>根据问题描述，可以使用循环单链表模拟杀人过程：</p>
+<ol>
+<li>表头是1号，表尾是n号，循环单链表的表尾指向表头模拟圆圈</li>
+<li>指针从表头1号开始走，当指到第k个节点时，即当报k的被杀时，就将该节点从链表中删除。</li>
+<li>删除该节点后，从该节点的下一个节点开始，再从1走到k,</li>
+<li>再次删除第k节点，一直到某节点的下一个节点指向自己，说明只有一个节点了，即最后活下的人</li>
+</ol>
+<p>根据上面分析循环单链表的操作过程，代码实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        self.value = value</span><br><span class="line">        self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_linkList</span><span class="params">(people_num)</span>:</span></span><br><span class="line">    <span class="string">"""创新循环单链表"""</span></span><br><span class="line">    head = Node(<span class="number">1</span>)</span><br><span class="line">    pre = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span>  range(<span class="number">2</span>, people_num+<span class="number">1</span>):</span><br><span class="line">        newNode = Node(i)</span><br><span class="line">        pre.next = newNode</span><br><span class="line">        pre = newNode</span><br><span class="line">    pre.next = head</span><br><span class="line">    <span class="keyword">return</span> head</span><br><span class="line"></span><br><span class="line">people_num = <span class="number">5</span>   <span class="comment"># 总人数</span></span><br><span class="line">k = <span class="number">2</span>  <span class="comment">#报k被杀</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> k == <span class="number">1</span>:</span><br><span class="line">    print(<span class="string">"最后存活编号："</span> + str(people_num))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    head = create_linkList(people_num)</span><br><span class="line">    pre = <span class="literal">None</span></span><br><span class="line">    cur = head  <span class="comment"># 当前报数的人</span></span><br><span class="line">    <span class="keyword">while</span> cur.next != cur:  <span class="comment"># #终止条件是节点的下一个节点指向本身,即只剩一个节点</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(k<span class="number">-1</span>):</span><br><span class="line">            <span class="comment"># 走到第k节点</span></span><br><span class="line">            pre = cur</span><br><span class="line">            cur = cur.next</span><br><span class="line">        print(<span class="string">"杀掉："</span> + str(cur.value))  <span class="comment"># 被删除节点编号</span></span><br><span class="line">        <span class="comment"># 删除节点</span></span><br><span class="line">        pre.next = cur.next</span><br><span class="line">        <span class="comment"># 从被删除节点的下一个节点从新报数</span></span><br><span class="line">        cur.next = <span class="literal">None</span></span><br><span class="line">        cur = pre.next</span><br><span class="line">    print(<span class="string">"最后存活者编号是:"</span> + str(cur.value))</span><br></pre></td></tr></table></figure>
+
+<p>这种方法的时间复杂度为：O(n*k),当人数量n很大，报的数k也很大时，并不适用。</p>
+<p><strong>思路二</strong></p>
+<p>递归思路，假设房间共有n = 10个人，<strong>初始编号</strong>为1,2,3,…10，设<strong>初始编号对应的编号位置</strong>为0, 1, 2, …9, 每次数到<code>k = 3</code>的人杀死，求最后活下来的人的初始编号是几？</p>
+<p>来看杀人过程：</p>
+<p><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/2018-05-16%2010-07-24%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png?imageView2/0/q/75%7Cwatermark/2/text/aHVhbnlvdWNoZW4uZ2l0aHViLmlv/font/5qW35L2T/fontsize/320/fill/IzBBMEEwQQ==/dissolve/93/gravity/SouthEast/dx/10/dy/10%7Cimageslim" alt="约瑟夫问题递归思路求解过程"></p>
+<p>(表中红色为报数k=3的被杀死的人的编号，绿色为最后活下来的人的编号)</p>
+<p>仔细观察表中每一轮初始编号的移动规律：</p>
+<p>第二轮到第一轮的编号移动规律：  (第二轮的编号x的编号位置 + k) % 10  ==&gt; 第一轮编号x的编号位置<br>比如第二轮编号5的编号位置是1，  (1 + 3) % 10 ==&gt; 4, 得到第一轮编号5的的编号位置是4</p>
+<p>进而得到第三轮到第二轮的编号移动规律：(第三轮编号x的编号位置 + k) % 9  ==&gt; 第二轮编号x的编号位置<br>比如第三轮编号5的编号位置是7，  (7 + 3) % 9 –&gt; 1, 得到第二轮编号5的的编号位置是1</p>
+<p>进而得到第N轮与第N-1轮的编号移动规律：(第N轮的编号x的编号位置 + k) % 第N-1轮总人数  ==&gt; 第N-1轮编号x的编号位置</p>
+<p>最后一轮存活着的编号x对应的编号位置一定是0， 那么根据以上规律，可以得到倒数第二轮编号x对应的编号位置，根据规律进一步可以得到倒数第三轮编号x对应的编号位置， 一直可以推导出第一轮编号x的对应编号位置，由第一轮编号x的对应编号位置<code>+1</code>得到的便是最后存活的人的初始编号。</p>
+<p>由上总结，当房间共有n个人，报数k杀死时，令f(n, k)表示最后存活着的编号位置，则有递归公式：</p>
+<ul>
+<li>n = 1: f(1, k) = 0;</li>
+<li>n &gt; 1: f(n, k) = (f(n-1, k) + k) % n;</li>
+</ul>
+<p>有了递推公式以后，代码实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">josephus</span><span class="params">(n, k)</span>:</span></span><br><span class="line">      <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">          <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">          <span class="keyword">return</span> (josephus(n - <span class="number">1</span>, k) + k) % n</span><br><span class="line"> </span><br><span class="line">n = <span class="number">10</span></span><br><span class="line">k = <span class="number">3</span></span><br><span class="line">print(<span class="string">"最后存活者编号是："</span>, josephus(n, k)+<span class="number">1</span>)   <span class="comment"># 4</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>对思路二的优化</strong></p>
+<p>对递归思路的进一步优化，假设n非常大，而k又比较小，比如n=100, k=3, 被杀过程如下：</p>
+<ul>
+<li>第一轮： 有100个人，每次报k=3的被杀，总共杀死了 math.floor(100/3) = 33个人，剩余67个人</li>
+<li>第二轮： 有67个人，每次报k=3的被杀，总共杀死了 math.floor(67/3) = 22个人，剩余45个人</li>
+<li>第三轮： 有45个人，每次报k=3的被杀，总共杀死了 math.floor(45/3) = 15个人，剩余30个人</li>
+<li>第四轮： 有30个人，每次报k=3的被杀，总共杀死了 math.floor(30/3) = 10个人，剩余20个人</li>
+<li>第五轮： 有20个人，每次报k=3的被杀，总共杀死了 math.floor(20/3) = 6个人，剩余14个人</li>
+<li>第六轮： 有14个人，每次报k=3的被杀，总共杀死了 math.floor(14/3) = 4个人，剩余10个人</li>
+<li>第七轮： 有10个人，每次报k=3的被杀，总共杀死了 math.floor(10/3) = 3个人，剩余7个人</li>
+<li>第八轮： 有7个人，每次报k=3的被杀，总共杀死了 math.floor(7/3) = 2个人，剩余5个人</li>
+<li>第九轮： 有5个人，每次报k=3的被杀，总共杀死了 math.floor(5/3) = 1个人，剩余4个人</li>
+<li>第十轮： 此时，总人数n=4, 报的数k=3，再利用思路二中的递归方法求解最后剩余者编号</li>
+</ul>
+<p>在上面杀人过程中，通过建立n/k的步长加快了杀人的速度，减少了算法时间。可以从下面这幅图中更加清晰的体会到：</p>
+<p><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/%E9%80%89%E5%8C%BA_005.png?imageView2/0/q/75%7Cwatermark/2/text/aHVhbnlvdWNoZW4uZ2l0aHViLmlv/font/5qW35L2T/fontsize/320/fill/IzBBMEEwQQ==/dissolve/93/gravity/SouthEast/dx/10/dy/10%7Cimageslim" alt="约瑟夫问题递归思路求解过程优化"></p>
+<p>本来需要10轮的，现在只需要7轮，如果n=100，k=3的话优化效果会更明显。</p>
+<p>根据以上分析，优化方法如下：</p>
+<ul>
+<li>math.floor(n/k) == 1: 用思路二中方法求解</li>
+<li>math.floor(n/k) &gt; 1: n = n - math.floor(n/k)</li>
+</ul>
+<p>实现代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">josephus</span><span class="params">(n, k)</span>:</span></span><br><span class="line">      <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">          <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">          <span class="keyword">return</span> (josephus(n - <span class="number">1</span>, k) + k) % n</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kill_people</span><span class="params">(n, k)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> math.floor(n/k) &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="comment"># 建立一个步长为n/k的递归过程；</span></span><br><span class="line">        n = n - math.floor(n/k)</span><br><span class="line">        kill_people(n, k)</span><br><span class="line"></span><br><span class="line">    live_index = josephus(n, k)</span><br><span class="line">    <span class="keyword">return</span> live_index+<span class="number">1</span></span><br><span class="line">        </span><br><span class="line">n = <span class="number">10</span></span><br><span class="line">k = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"最后存活者编号是"</span>, kill_people(n,k))</span><br></pre></td></tr></table></figure>
+
+<p><strong>思路三</strong></p>
+<p>使用数组存储房间中的每个人: <code>arr = [ i for i in range(1, 10+1) ]</code><br>arr数组代表房间里的10个人：<code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</code><br>每次被杀的人的编号： <code>kill_num = (kill_num + k - 1) % len(arr)</code>。 其中的(k-1)对应数组的下标<br>有了被杀人的的编号后，将其pop出数组。<br>然后再次计算下一个被杀人的编号，直到数组中只剩一个人。</p>
+<p>代码实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">josephus</span><span class="params">(n, k)</span>:</span></span><br><span class="line">    arr = [ i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n+<span class="number">1</span>) ]</span><br><span class="line">    kill_num = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> len(arr) != <span class="number">1</span>:</span><br><span class="line">        kill_num = (kill_num + k - <span class="number">1</span>) % len(arr)</span><br><span class="line">        print(<span class="string">"杀死："</span> + str(arr.pop(kill_num)))</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>]</span><br><span class="line">      </span><br><span class="line"></span><br><span class="line">n = <span class="number">10</span></span><br><span class="line">k = <span class="number">3</span></span><br><span class="line">print(<span class="string">"最后存活者编号是："</span>, josephus(n, k))   <span class="comment"># 4</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>对思路三的优化</strong></p>
+<p>在思路三中需要构建一个数组，也可以不用数组来减少内存。使用动态规划来解：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Josephus</span><span class="params">(n, k)</span>:</span></span><br><span class="line">    kill_num = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n+<span class="number">1</span>):</span><br><span class="line">        kill_num = (k + kill_num) % i</span><br><span class="line">    <span class="keyword">return</span> kill_num + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">n = <span class="number">5</span></span><br><span class="line">k = <span class="number">2</span></span><br><span class="line">print(<span class="string">"最后存活者编号："</span>, Josephus(n, k))</span><br></pre></td></tr></table></figure>
+
+<p>最后这个动态规划的方法来自：<a href="https://www.quora.com/What-is-the-best-solution-for-Josephus-problem-algorithm" target="_blank" rel="noopener">https://www.quora.com/What-is-the-best-solution-for-Josephus-problem-algorithm</a></p>
+</div></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://huanyouchen.github.io/2018/05/13/What-is-the-best-solution-for-Josephus-problem/';
+    this.page.identifier = '2018/05/13/What-is-the-best-solution-for-Josephus-problem/';
+    this.page.title = '约瑟夫问题求解及优化';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//huanyouchen-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//huanyouchen-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://huanyouchen-blog.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div><div class="pure-u-1 pure-u-md-4-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">幻悠尘的小窝.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

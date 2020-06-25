@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="python，Java，hacker"><title>markdown插入table表格后出现大量br换行导致的空白问题解决 | 幻悠尘的小窝</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-118684665-1','auto');ga('send','pageview');
+</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + '6630ddc4c60afb15b88971c6ab1d81a8';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">markdown插入table表格后出现大量br换行导致的空白问题解决</h1><a id="logo" href="/.">幻悠尘的小窝</a><p class="description">The quieter you become,the more you are able to hear.</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/projects/"><i class="fa fa-github"> 作品</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/message-board/"><i class="fa fa-comments"> 留言</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-4-4"><div class="content_container"><div class="post"><h1 class="post-title">markdown插入table表格后出现大量br换行导致的空白问题解决</h1><div class="post-content"><p>VSCode编辑markdown文件内容，插入<code>table</code>后，Chrome浏览器显示的文章页面中表格上面有大量的空白的解决方法。</p>
+<p>使用Markdown写文章时候需要插入表格，一般直接用Markdown的表格语法来创建，比如这样：</p>
+<a id="more"></a>
+
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">| 水果        | 价格    |  数量  |</span><br><span class="line">| --------   | -----:   | :----: |</span><br><span class="line">| 香蕉        | $1      |   5    |</span><br><span class="line">| 苹果        | $1      |   6    |</span><br><span class="line">| 草莓        | $1      |   7    |</span><br></pre></td></tr></table></figure>
+
+<p>创建出来的表格效果：</p>
+<table>
+<thead>
+<tr>
+<th>水果</th>
+<th align="right">价格</th>
+<th align="center">数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>香蕉</td>
+<td align="right">$1</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td>苹果</td>
+<td align="right">$1</td>
+<td align="center">6</td>
+</tr>
+<tr>
+<td>草莓</td>
+<td align="right">$1</td>
+<td align="center">7</td>
+</tr>
+</tbody></table>
+<p>但是如果表格复杂一点，比如合并单元格，居中居左，背景颜色等设置，就需要用HTML里面的<code>&lt;table&gt;</code>表格来完成，比如HTML代码这样的：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">table</span>&gt;</span></span></span><br><span class="line">   <span class="xml"><span class="tag">&lt;<span class="name">tbody</span>&gt;</span></span></span><br><span class="line"><span class="code">    &lt;tr&gt;</span></span><br><span class="line"><span class="code">     &lt;th rowspan="2" style="text-align:center"&gt;解释变量&lt;/th&gt;</span></span><br><span class="line"><span class="code">     &lt;th style="text-align:right"&gt;输出结果&lt;/th&gt;</span></span><br><span class="line"><span class="code">     &lt;th&gt;&lt;/th&gt;</span></span><br><span class="line"><span class="code">    &lt;/tr&gt;</span></span><br><span class="line"><span class="code">    &lt;tr&gt;</span></span><br><span class="line"><span class="code">     &lt;th style="text-align:center"&gt;定量数据&lt;/th&gt;</span></span><br><span class="line"><span class="code">     &lt;th style="text-align:center"&gt;定性数据&lt;/th&gt;</span></span><br><span class="line"><span class="code">    &lt;/tr&gt;</span></span><br><span class="line"><span class="code">    &lt;tr&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;定量数据(单个)&lt;/td&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;(一元)回归分析&lt;/td&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;逻辑回归&lt;/td&gt;</span></span><br><span class="line"><span class="code">    &lt;/tr&gt;</span></span><br><span class="line"><span class="code">    &lt;tr&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;定性数据(单个)&lt;/td&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;每一类别的平均值汇总和t检验&lt;/td&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;每一类别所占比例的汇总和卡方检验&amp;quot;&lt;/td&gt;</span></span><br><span class="line"><span class="code">    &lt;/tr&gt;</span></span><br><span class="line"><span class="code">    &lt;tr&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;多个解释变量同时进行&lt;/td&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;多元回归分析&lt;/td&gt;</span></span><br><span class="line"><span class="code">     &lt;td style="text-align:center"&gt;逻辑回归&lt;/td&gt;</span></span><br><span class="line"><span class="code">    &lt;/tr&gt;</span></span><br><span class="line">   <span class="xml"><span class="tag">&lt;/<span class="name">tbody</span>&gt;</span></span></span><br><span class="line">  <span class="xml"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>创建出来表格效果：</p>
+<table>
+   <tbody>
+    <tr>
+     <th rowspan="2" style="text-align:center">解释变量</th>
+     <th style="text-align:right">输出结果</th>
+     <th></th>
+    </tr>
+    <tr>
+     <th style="text-align:center">定量数据</th>
+     <th style="text-align:center">定性数据</th>
+    </tr>
+    <tr>
+     <td style="text-align:center">定量数据(单个)</td>
+     <td style="text-align:center">(一元)回归分析</td>
+     <td style="text-align:center">逻辑回归</td>
+    </tr>
+    <tr>
+     <td style="text-align:center">定性数据(单个)</td>
+     <td style="text-align:center">每一类别的平均值汇总和t检验</td>
+     <td style="text-align:center">每一类别所占比例的汇总和卡方检验</td>
+    </tr>
+    <tr>
+     <td style="text-align:center">多个解释变量同时进行</td>
+     <td style="text-align:center">多元回归分析</td>
+     <td style="text-align:center">逻辑回归</td>
+    </tr>
+   </tbody>
+  </table>
+
+<p>虽然可以创建出来表格，但是会发现表格上方有大量的空白，<br>打开Chrome的开发者工具，定位到表格部分，发现<code>&lt;table&gt;</code>标签上面有大量的<code>&lt;br&gt;</code>标签：</p>
+<img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/2019-03-11-markdown-br-kongbai.png" width="70%" height="70%">
+
+
+<p>解决的方法是将原来的HTML代码删去缩进和空格，如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">table</span>&gt;</span><span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">th</span> <span class="attr">rowspan</span>=<span class="string">2</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>解释变量<span class="tag">&lt;/<span class="name">th</span>&gt;</span><span class="tag">&lt;<span class="name">th</span> <span class="attr">style</span>=<span class="string">"text-align:right"</span>&gt;</span>输出结果<span class="tag">&lt;/<span class="name">th</span>&gt;</span><span class="tag">&lt;<span class="name">th</span>&gt;</span><span class="tag">&lt;/<span class="name">th</span>&gt;</span><span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">th</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>定量数据<span class="tag">&lt;/<span class="name">th</span>&gt;</span><span class="tag">&lt;<span class="name">th</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>定性数据<span class="tag">&lt;/<span class="name">th</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>定量数据(单个)<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>(一元)回归分析<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>逻辑回归<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>定性数据(单个)<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>每一类别的平均值汇总和t检验<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>每一类别所占比例的汇总和卡方检验"<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>多个解释变量同时进行<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>多元回归分析<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span>逻辑回归<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>解决后的效果：</p>
+<table><tr><th rowspan=2 style="text-align:center">解释变量</th><th style="text-align:right">输出结果</th><th></th><tr><th style="text-align:center">定量数据</th><th style="text-align:center">定性数据</th></tr></tr><tr><td style="text-align:center">定量数据(单个)</td><td style="text-align:center">(一元)回归分析</td><td style="text-align:center">逻辑回归</td></tr><tr><td style="text-align:center">定性数据(单个)</td><td style="text-align:center">每一类别的平均值汇总和t检验</td><td style="text-align:center">每一类别所占比例的汇总和卡方检验"</td></tr><tr><td style="text-align:center">多个解释变量同时进行</td><td style="text-align:center">多元回归分析</td><td style="text-align:center">逻辑回归</td></tr></table>
+
+</div></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://huanyouchen.github.io/2019/03/11/Markdown-has-a-lot-of-blanks-after-insert-table/';
+    this.page.identifier = '2019/03/11/Markdown-has-a-lot-of-blanks-after-insert-table/';
+    this.page.title = 'markdown插入table表格后出现大量br换行导致的空白问题解决';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//huanyouchen-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//huanyouchen-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://huanyouchen-blog.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div><div class="pure-u-1 pure-u-md-4-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">幻悠尘的小窝.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

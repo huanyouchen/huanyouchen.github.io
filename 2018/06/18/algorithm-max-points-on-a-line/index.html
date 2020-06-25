@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="python，Java，hacker"><title>二维平面经过点数最多的直线 | 幻悠尘的小窝</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-118684665-1','auto');ga('send','pageview');
+</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + '6630ddc4c60afb15b88971c6ab1d81a8';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">二维平面经过点数最多的直线</h1><a id="logo" href="/.">幻悠尘的小窝</a><p class="description">The quieter you become,the more you are able to hear.</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/projects/"><i class="fa fa-github"> 作品</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/message-board/"><i class="fa fa-comments"> 留言</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-4-4"><div class="content_container"><div class="post"><h1 class="post-title">二维平面经过点数最多的直线</h1><div class="post-content"><h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>题目地址： <a href="https://www.nowcoder.com/practice/bd9eb2b825894da6acfca0951cc38220?tpId=8&&tqId=11030&rp=3&ru=/activity/oj&qru=/ta/cracking-the-coding-interview/question-ranking" target="_blank" rel="noopener">穿点最多的直线</a></p>
+<p>在二维平面上，有一些点，请找出经过点数最多的那条线。<br>给定一个点集vector p和点集的大小n,没有两个点的横坐标相等的情况,请返回一个vector，代表经过点数最多的那条直线的斜率和截距。</p>
+<a id="more"></a>
+<p>点集中p的定义为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, a=<span class="number">0</span>, b=<span class="number">0</span>)</span>:</span></span><br><span class="line">        self.x = a</span><br><span class="line">        self.y = b</span><br></pre></td></tr></table></figure>
+
+<h4 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h4><p>在数学知识中，如果直线L1经过了点a和点b，斜率为k1。直线L2经过了点c和点d，斜率为k2。如果k1和k2相等，那就说明L1和L2是在同一条直线L上的，且直线L经过点a,b,c,d。</p>
+<p><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/%E9%80%89%E5%8C%BA_007.png?" alt="实现思路图示"></p>
+<h4 id="过程描述"><a href="#过程描述" class="headerlink" title="过程描述"></a>过程描述</h4><p>遍历点集中的任意两个点p1和p2，并计算p1和p2的斜率，然后将斜率放入字典，字典中key为斜率，value为该斜率出现的次数，每当有相同的斜率出现时，该斜率次数加1。最后统计字典中value最大的值，即相同斜率次数最多的，那么该斜率代表的直线就是平面上经过点数最多的直线。</p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># class Point:</span></span><br><span class="line"><span class="comment">#     def __init__(self, a=0, b=0):</span></span><br><span class="line"><span class="comment">#         self.x = a</span></span><br><span class="line"><span class="comment">#         self.y = b</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DenseLine</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getLine</span><span class="params">(self, p, n)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        max_line = <span class="number">0</span></span><br><span class="line">        max_slope = <span class="literal">None</span></span><br><span class="line">        max_intercept = <span class="literal">None</span></span><br><span class="line">        slope_dict = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n<span class="number">-1</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(i+<span class="number">1</span>, n):</span><br><span class="line">                k = <span class="number">1.0</span> * (p[j].y - p[i].y) / (p[j].x - p[i].x)</span><br><span class="line">                <span class="keyword">if</span> k <span class="keyword">in</span> slope_dict:</span><br><span class="line">                    slope_dict[k] += <span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    slope_dict[k] = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> slope_dict:</span><br><span class="line">            <span class="keyword">if</span> slope_dict[item] &gt; max_line:</span><br><span class="line">                max_line = slope_dict[item]</span><br><span class="line">                max_slope = item</span><br><span class="line">                max_intercept = p[i].y - item * p[i].x</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> max_slope, max_intercept</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行时间：133ms</span></span><br><span class="line"><span class="comment"># 占用内存：5856k</span></span><br></pre></td></tr></table></figure>
+
+<p>看别人提交的代码，还有更简洁的实现，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DenseLine</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getLine</span><span class="params">(self, p, n)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        lines=[]</span><br><span class="line">        counts=[]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n<span class="number">-1</span>):</span><br><span class="line">            <span class="comment"># k斜率， b截距</span></span><br><span class="line">            k = (p[i+<span class="number">1</span>].y - p[i].y)/(p[i+<span class="number">1</span>].x - p[i].x)</span><br><span class="line">            b = p[i].y-p[i].x*k</span><br><span class="line">            lines.append((k,b))</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> lines:</span><br><span class="line">            counts.append(lines.count(i))</span><br><span class="line">        <span class="keyword">return</span> lines[counts.index(max(counts))]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行时间：95ms</span></span><br><span class="line"><span class="comment"># 占用内存：5624k</span></span><br></pre></td></tr></table></figure>
+<p>lines列表中以元组的形式保存两点之间连线的斜率和截距(k,b)</p>
+<p>在第12行，<code>lines.count(i)</code>会返回列表中第<code>i</code>个<code>(k,b)</code>出现的次数，比如列表中的截距假设为：<br><code>lines = [(1,2), (3, 4), (5,6),(1,2)]</code>，那么count()方法返回的结果是：counts[2,1,1,2]</p>
+<p>在第13行，统计counts列表中的最大值，即相同(k,b)的个数，然后用index()方法返回counts列表中最大值第一个匹配项的索引位置，根据索引位置返回lines列表中相同次数最多的(k,b)，该斜率代表的直线就是平面上经过点数最多的直线。</p>
+<p>这里面涉及到列表的两个小知识点：</p>
+<p>count()方法，用于统计某个元素在列表中出现的次数。 语法为： <code>list.count(obj)</code><br>obj是列表中要统计的对象，返回值是该元素在列中中出现的次数。</p>
+<p>index()方法，用于从列表中找出某个值的第一个匹配项的索引位置。 语法： <code>list.index(obj)</code><br>obj是要查找的对象，该方法返回查找对象的索引位置，如果没有找到对象则抛出异常。</p>
+</div></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://huanyouchen.github.io/2018/06/18/algorithm-max-points-on-a-line/';
+    this.page.identifier = '2018/06/18/algorithm-max-points-on-a-line/';
+    this.page.title = '二维平面经过点数最多的直线';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//huanyouchen-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//huanyouchen-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://huanyouchen-blog.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div><div class="pure-u-1 pure-u-md-4-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">幻悠尘的小窝.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

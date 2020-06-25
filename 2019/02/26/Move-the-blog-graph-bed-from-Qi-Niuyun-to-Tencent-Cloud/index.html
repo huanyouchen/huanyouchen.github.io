@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="python，Java，hacker"><title>把博客图床从七牛云迁移到腾讯云 | 幻悠尘的小窝</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-118684665-1','auto');ga('send','pageview');
+</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + '6630ddc4c60afb15b88971c6ab1d81a8';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">把博客图床从七牛云迁移到腾讯云</h1><a id="logo" href="/.">幻悠尘的小窝</a><p class="description">The quieter you become,the more you are able to hear.</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/projects/"><i class="fa fa-github"> 作品</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/message-board/"><i class="fa fa-comments"> 留言</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-4-4"><div class="content_container"><div class="post"><h1 class="post-title">把博客图床从七牛云迁移到腾讯云</h1><div class="post-content"><h2 id="1-迁移原因"><a href="#1-迁移原因" class="headerlink" title="1 迁移原因"></a>1 迁移原因</h2><p>七牛云测试域名回收，导致博客里的图片全都看不了了，打开对应的图片链接会显示：<code>{&quot;error&quot;:&quot;no such domain&quot;}</code></p>
+<p>测试域名指的是你的存储空间建立完成后会有的以<code>clouddn. com</code>结尾的域名，这个域名以前是可以一直使用的，但是现在每个测试域名每日限总流量 10GB，而且自创建起 30 个自然日后系统会自动回收，仅供测试使用。我的测试域名已经被回收了，所以博客图片全都也没了。具体公告<a href="https://developer.qiniu.com/fusion/kb/1319/test-domain-access-restriction-rules" target="_blank" rel="noopener">见这里</a></p>
+<a id="more"></a>
+<p>解决方法有两个，一种是把测试域名换成自己本网站的域名，比如我的域名<code>huanyouchen.github.io</code>，但是这种方法需要备案，备案更加麻烦。。。另一种方法是把七牛云里的图片迁移到别的图床上，然后更换本站图片的链接到对应图床上，这样更简单点，本文记录下把图片从七牛云迁移到腾讯云的过程。</p>
+<h2 id="2-过程思路"><a href="#2-过程思路" class="headerlink" title="2 过程思路"></a>2 过程思路</h2><p>首先需要把图片从七牛云里面移出来，如果是在该网站存储空间的内容管理下操作，通过获取图片外部链接再下载下来，这个是行不通的，一方面网站图片可能非常多，另外由于该测试域名被回收，在预览和复制外链时候根本没有反应。</p>
+<p>好在七牛云提供了命令行工具<code>qshell</code>,使用qshell来下载，具体过程如下。</p>
+<h3 id="2-1-博客图片从七牛云下载到本地"><a href="#2-1-博客图片从七牛云下载到本地" class="headerlink" title="2.1 博客图片从七牛云下载到本地"></a>2.1 博客图片从七牛云下载到本地</h3><p>qshell使用方法介绍：<a href="https://developer.qiniu.com/kodo/tools/1302/qshell" target="_blank" rel="noopener">命令行工具qshell</a></p>
+<h4 id="2-1-1"><a href="#2-1-1" class="headerlink" title="2.1.1"></a>2.1.1</h4><p>我原来的存储空间(名字是huanyouchen)已经被回收，需要新建一个存储空间(命名为<code>backup</code>)，这个新存储空间backup有30天可用的测试域名：<code>pnhfj36jj.bkt.clouddn.com</code>(这个域名每个人的都不一样)，利用qshell把旧空间中的图片拷贝到新空间banckup中。 具体步骤如下：</p>
+<ul>
+<li><p>下载qshell，<a href="http://devtools.qiniu.com/qshell-v2.3.6.zip?ref=developer.qiniu.com" target="_blank" rel="noopener">下载地址</a></p>
+</li>
+<li><p>添加权限，根据自己系统选择相应qshell版本，我的是Ubuntu 18.04，64位系统，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x qshell_linux_x64</span><br><span class="line"></span><br><span class="line">ln -s qshell_linux_x64 qshell</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置秘钥:</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;qshell account 你的AccessKey 你的SecretKey 你的name(幻悠尘)</span><br></pre></td></tr></table></figure>
+<p>AccessKey 和 SecretKey可以通过七牛云的个人面板-》秘钥管理中查看， name是你的账户名字，这个可以通过命令<code>./qshell user ls</code>来查看</p>
+<ul>
+<li>把旧空间里的文件迁移到新空间：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#获取空间huanyouchen里面的所有文件列表，并保存到文件list.txt中：</span><br><span class="line">.&#x2F;qshell listbucket -o huanyouchen(你的旧空间名字) list.txt</span><br><span class="line"># 切割出文件名</span><br><span class="line">cat list.txt | awk -F &#39;\t&#39; &#39;&#123;print $1&#125;&#39; &gt; list_final.txt</span><br><span class="line"># 将旧空间中的文件批量复制到新空间，在复制的过程中，给文件进行重命名。</span><br><span class="line">.&#x2F;qshell batchcopy --force huanyouchen(你的旧空间名字) backup(你的新空间名字) list_final.txt</span><br></pre></td></tr></table></figure>
+<p>如果这个过程出错的话可以查看listbucket的<a href="https://github.com/qiniu/qshell/blob/master/docs/listbucket.md" target="_blank" rel="noopener">参考文档</a>和batchcopy的<a href="https://github.com/qiniu/qshell/blob/master/docs/batchcopy.md" target="_blank" rel="noopener">参考文档</a></p>
+<h4 id="2-1-2"><a href="#2-1-2" class="headerlink" title="2.1.2"></a>2.1.2</h4><p>这个操作完成后，就可以在七牛云的backup空间中看到存储过的网站图片了，下面把这些图片利用qshell提供的<code>qdownload</code>命令把新空间backup中的图片下载到本地。</p>
+<p>查看qdownload的<a href="https://github.com/qiniu/qshell/blob/master/docs/qdownload.md" target="_blank" rel="noopener">参考文档</a>， 注意到：该功能默认需要计费，如果希望享受10G的免费流量，请自行设置cdn_domain参数，如不设置，需支付源站流量费用，无法减免。</p>
+<p>因此，首先在当前目录下(qshell所在目录)新建qdownload 功能需要的配置文件<code>batch_download.conf</code>，在配置文件中设置cdn_domain这个参数。 过程如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 新建配置文件</span><br><span class="line">touch batch_download.conf</span><br><span class="line"># 新建本地保存图片文件夹，路径可以自己设定</span><br><span class="line">mkdir &#x2F;home&#x2F;hyc&#x2F;下载&#x2F;qiniu_qshell&#x2F;img_backup</span><br><span class="line"># 编辑配置文件</span><br><span class="line">gedit batch_download.conf</span><br></pre></td></tr></table></figure>
+<p>配置文件的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;dest_dir&quot;   :   &quot;&#x2F;home&#x2F;hyc&#x2F;下载&#x2F;qiniu_qshell&#x2F;img_backup&quot;,</span><br><span class="line">    &quot;bucket&quot;     :   &quot;backup&quot;,</span><br><span class="line">    &quot;prefix&quot;     :   &quot;&quot;,</span><br><span class="line">    &quot;suffixes&quot;   :   &quot;&quot;,</span><br><span class="line">    &quot;cdn_domain&quot; :   &quot;http:&#x2F;&#x2F;pnhfj36jj.bkt.clouddn.com&quot;,</span><br><span class="line">    &quot;referer&quot;    :   &quot;&quot;,</span><br><span class="line">    &quot;log_file&quot;   :   &quot;download.log&quot;,</span><br><span class="line">    &quot;log_level&quot;  :   &quot;info&quot;,</span><br><span class="line">    &quot;log_rotate&quot; :   1,</span><br><span class="line">    &quot;log_stdout&quot; :   false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中dest_dir是新建的本地保存图片文件夹，bucket是新的存储空间名字，cdn_domain是新存储空间banckup对外访问域名，这个可以在backup存储空间的空间概览中看到，以clouddn.com结尾的。(在默认不指定cdn_domain的情况下，会从存储源站下载资源，这部分下载产生的流量会生成存储源站下载流量的计费。)其余参数含义可以看参考文档。</p>
+<p>在设置好配置文件后，执行qdownload命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;qshell qdownload batch_download.conf</span><br><span class="line"></span><br><span class="line"># 若网站图片非常多，可以使用-c选项设定下载的并发协程数量(大小必须在1-2000，如果不在这个范围内，默认为5)：</span><br><span class="line"># .&#x2F;qshell qdownload -c 50 batch_download.conf</span><br></pre></td></tr></table></figure>
+<p>下载完成后，可以在本地img_backup文件夹中看到博客中的图片，第一步完成。</p>
+<h3 id="2-2-从本地上传到腾讯云"><a href="#2-2-从本地上传到腾讯云" class="headerlink" title="2.2 从本地上传到腾讯云"></a>2.2 从本地上传到腾讯云</h3><p>登录腾讯云-》对象存储-》创建存储桶，然后把本地img_backup文件夹中的博客图片全都上传到存储桶中，在权限管理中设置存储通访问权限，在基础配置中查看访问域名。</p>
+<h3 id="2-3-修改本站文件内容里的图片链接"><a href="#2-3-修改本站文件内容里的图片链接" class="headerlink" title="2.3 修改本站文件内容里的图片链接"></a>2.3 修改本站文件内容里的图片链接</h3><p>在本站以前的Markdown文件中，文章内容里的七牛云的图片链接形式为:<a href="http://p7u7ikgiw.bkt.clouddn.com/xxxx.png" target="_blank" rel="noopener">http://p7u7ikgiw.bkt.clouddn.com/xxxx.png</a></p>
+<p>而腾讯云的图片链接形式为：<a href="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/xxx.png" target="_blank" rel="noopener">https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/xxx.png</a></p>
+<p>所以需要把hexo的<code>_post</code>文件夹下所有md格式的文章中的图片链接从七牛云更换为腾讯云的链接形式，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 进入目录</span><br><span class="line">cd &#x2F;home&#x2F;hyc&#x2F;hexo&#x2F;blog&#x2F;source&#x2F;_posts</span><br><span class="line"># 更换链接</span><br><span class="line">sed -i &#39;s#(http:&#x2F;&#x2F;p7u7ikgiw.bkt.clouddn.com#(https:&#x2F;&#x2F;huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com#g&#39; *.md</span><br></pre></td></tr></table></figure>
+
+<p>更换完成后，再用<code>hexo s</code>查看博客内的图片，应该能正常显示了。</p>
+<p>若还有不能显示的，可以手动打开相应文章的md文件，用编辑器的替换功能把<strong><a href="http://p7u7ikgiw.bkt.clouddn.com" target="_blank" rel="noopener">http://p7u7ikgiw.bkt.clouddn.com</a></strong>全都替换为<code>https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com</code></p>
+<p>使用<code>hexo g d</code>部署后，图床迁移完成。</p>
+</div></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://huanyouchen.github.io/2019/02/26/Move-the-blog-graph-bed-from-Qi-Niuyun-to-Tencent-Cloud/';
+    this.page.identifier = '2019/02/26/Move-the-blog-graph-bed-from-Qi-Niuyun-to-Tencent-Cloud/';
+    this.page.title = '把博客图床从七牛云迁移到腾讯云';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//huanyouchen-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//huanyouchen-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://huanyouchen-blog.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div><div class="pure-u-1 pure-u-md-4-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">幻悠尘的小窝.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

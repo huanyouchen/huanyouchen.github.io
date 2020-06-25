@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="python，Java，hacker"><title>通过源码编译安装TensorFlow-CPU版本支持AVX等指令集 | 幻悠尘的小窝</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-118684665-1','auto');ga('send','pageview');
+</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + '6630ddc4c60afb15b88971c6ab1d81a8';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">通过源码编译安装TensorFlow-CPU版本支持AVX等指令集</h1><a id="logo" href="/.">幻悠尘的小窝</a><p class="description">The quieter you become,the more you are able to hear.</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/projects/"><i class="fa fa-github"> 作品</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/message-board/"><i class="fa fa-comments"> 留言</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-4-4"><div class="content_container"><div class="post"><h1 class="post-title">通过源码编译安装TensorFlow-CPU版本支持AVX等指令集</h1><div class="post-content"><p>系统： ubuntu16.04 64位<br>Python3.5版本<br>tensorflow: 1.8(CPU版本)<br>bazel: bazel-0.13.1</p>
+<p><strong>注意：本文安装的是TensorFlow的CPU版本， 不是GPU版本的</strong></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>官网方法在Ubuntu上通过pip或者Virtualenv安装TensorFlow： <a href="https://www.tensorflow.org/install/install_linux" target="_blank" rel="noopener">https://www.tensorflow.org/install/install_linux</a></p>
+<a id="more"></a>
+<p>按照官网方法安装完成后测试安装结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">hello = tf.constant(<span class="string">'Hello, TensorFlow!'</span>)</span><br><span class="line">sess = tf.Session()</span><br><span class="line">print(sess.run(hello))</span><br></pre></td></tr></table></figure>
+
+<p>运行后有一个<strong>Warning: your cpu supports instructions that this tensorflow binary was not compiled to use: avx2 fma</strong></p>
+<p>意思是提示我的CPU支持avx2和fma指令集，但是安装的TensorFlow版本没有编译使用。</p>
+<p>在维基百科上看了下这个AVX指令集：</p>
+<blockquote><p>AVX指令集（英语：Advanced Vector Extensions，即高级向量扩展指令集）是x86架构处理器中的指令集，被英特尔和AMD的处理器所支持。AVX指令集由英特尔在2008年3月提出，并在2011年第一季度出品的Sandy Bridge系列处理器首获支持。随后，AMD在2011年第三季度的Bulldozer系列处理器也支持了AVX。</p>
+<p>AVX是X86指令集的SSE延伸架构，如IA16至IA32般的把暂存器XMM 128bit提升至YMM 256bit，以增加一倍的运算效率。此架构支持了三运算指令（3-Operand Instructions），减少在编码上需要先复制才能运算的动作。在微码部分使用了LES LDS这两少用的指令作为延伸指令Prefix。</p>
+<p>AVX2指令集将整数操作扩展到了256位，并引入了FMA指令集作为扩充。AVX-512则将指令进一步扩展到了512位。</p>
+<footer><strong>来自Wikipedia:</strong><cite><a href="https://zh.wikipedia.org/wiki/AVX%E6%8C%87%E4%BB%A4%E9%9B%86" target="_blank" rel="noopener">zh.wikipedia.org/wiki/AVX%E6%8C%87%E4%BB%A4%E9%9B%86</a></cite></footer></blockquote>
+
+<p>看的不太懂，不过这里有一个更直接的介绍：</p>
+<blockquote><p>除了通常的算术和逻辑，现代CPU提供了许多低级指令，称为扩展，例如， SSE2，SSE4，AVX等</p>
+<p>高级矢量扩展（AVX）是英特尔在2008年3月提出的英特尔和AMD微处理器的x86指令集体系结构的扩展，英特尔首先通过Sandy Bridge处理器在2011年第一季度推出，随后由AMD推出Bulldozer处理器在2011年第三季度.AVX提供了新功能，新指令和新编码方案。<br>特别是，AVX引入了融合乘法累加（FMA）操作，加速了线性代数计算，即点积，矩阵乘法，卷积等。几乎所有机器学习训练都涉及大量这些操作，因此将会支持AVX和FMA的CPU（最高达300％）更快。该警告指出您的CPU确实支持AVX（hooray！）。</p>
+<p>在此强调一下：</p>
+<p>这只限于CPU。如果你有一个GPU，你不应该关心AVX的支持，因为大多数昂贵的操作将被分派到一个GPU设备上（除非明确地设置）。在这种情况下，您可以简单地忽略此警告。</p>
+<p>那为什么会出现这种警告呢？</p>
+<p>由于tensorflow默认分布是在没有CPU扩展的情况下构建的，例如SSE4.1，SSE4.2，AVX，AVX2，FMA等。默认版本（来自pip install tensorflow的版本）旨在与尽可能多的CPU兼容。另一个观点是，即使使用这些扩展名，CPU的速度也要比GPU慢很多，并且期望在GPU上执行中型和大型机器学习培训。</p>
+<p>如果您没有GPU并且希望尽可能多地利用CPU，那么如果您的CPU支持AVX，AVX2和FMA，则应该从针对CPU优化的源构建tensorflow。在这个问题中已经讨论过这个问题，也是这个GitHub问题。 Tensorflow使用称为bazel的ad-hoc构建系统，构建它并不是那么简单，但肯定是可行的。在此之后，不仅警告消失，tensorflow性能也应该改善。</p>
+<footer><strong>来自：</strong><cite><a href="https://blog.csdn.net/hq86937375/article/details/79696023" target="_blank" rel="noopener">blog.csdn.net/hq86937375/article/details/79696023</a></cite></footer></blockquote>
+
+<p>相关链接：</p>
+<p><a href="https://stackoverflow.com/questions/41293077/how-to-compile-tensorflow-with-sse4-2-and-avx-instructions" target="_blank" rel="noopener">https://stackoverflow.com/questions/41293077/how-to-compile-tensorflow-with-sse4-2-and-avx-instructions</a></p>
+<p><a href="https://stackoverflow.com/questions/47068709/your-cpu-supports-instructions-that-this-tensorflow-binary-was-not-compiled-to-u" target="_blank" rel="noopener">https://stackoverflow.com/questions/47068709/your-cpu-supports-instructions-that-this-tensorflow-binary-was-not-compiled-to-u</a></p>
+<h3 id="通过源码编译安装TensorFlow-CPU版本支持AVX等指令集"><a href="#通过源码编译安装TensorFlow-CPU版本支持AVX等指令集" class="headerlink" title="通过源码编译安装TensorFlow-CPU版本支持AVX等指令集"></a>通过源码编译安装TensorFlow-CPU版本支持AVX等指令集</h3><p>建议提前完整看一遍官网方法，在Ubuntu上通过源码安装TensorFlow：<a href="https://www.tensorflow.org/install/install_sources" target="_blank" rel="noopener">https://www.tensorflow.org/install/install_sources</a></p>
+<p><strong>注意事项:</strong></p>
+<ul>
+<li>分清楚Tensorflow的CPU版本和GPU版本， 本文使用的是CPU版本</li>
+<li>分清楚要使用Python2.7还是3.x来学习使用TensorFlow， 本文使用的是3.x</li>
+</ul>
+<h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><p>新建目录： <code>mkdir tf</code>,<br>进入到该目录下： <code>cd tf</code><br>使用git来clone最新的TensorFlow的源码：<code>git clone https://github.com/tensorflow/tensorflow</code></p>
+<p>下载完成后，进入到tensorflow的目录里： <code>cd tensorflow</code></p>
+<p><strong>注意:</strong> 这里官网提示：</p>
+<blockquote><p>The preceding git clone command creates a subdirectory named tensorflow. After cloning, you may optionally build a specific branch (such as a release branch) by invoking the following commands:</p>
+<p>$ cd tensorflow<br>$ git checkout Branch # where Branch is the desired branch<br>For example, to work with the r1.0 release instead of the master release, issue the following command:</p>
+<p>$ git checkout r1.0</p>
+<footer><strong>https://www.tensorflow.org/install/install_sources</strong></footer></blockquote>
+
+
+<p>意思是要把git 分支切换到r1.0，<br>但是后面要使用bazel来编译，如果安装的bazel比较新，比如我安装的是<code>bazel-0.13.1-installer-linux-x86_64.sh</code>，在切换r1.0分支后bazel编译的时候会报错：<strong>Current Bazel version is 0.13.1, expected at least 0.5.4</strong>,<br>详细讨论看这里：<a href="https://github.com/tensorflow/tensorflow/issues/16654" target="_blank" rel="noopener">https://github.com/tensorflow/tensorflow/issues/16654</a></p>
+<p>因此，这里选择不切换分支，使用默认分支master。</p>
+<h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><p>安装Bazel， 官网安装方法：<a href="https://docs.bazel.build/versions/master/install-ubuntu.html" target="_blank" rel="noopener">https://docs.bazel.build/versions/master/install-ubuntu.html</a></p>
+<p>安装完成后，使用命令<code>bazel version</code>， 如果出现:<code>Build label: 0.13.1</code>这样的就表示安装好了</p>
+<p>然后安装TensorFlow Python dependencies，命令为:<br><code>sudo apt-get install python3-numpy python3-dev python3-pip python3-wheel</code></p>
+<h3 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h3><p>进入到tensorflow源码的根路径，也就是：tensorflow文件夹下面，里面有一个<code>configure</code>的文件，执行命令: <code>./configure</code></p>
+<p><strong>注意:</strong></p>
+<p>官方文档上选择默认安装的是Python版本是2.7，而且我Ubuntu系统默认的Python版本也是2.7的，会提示如下:</p>
+<blockquote><p>Please specify the location of python. [Default is /usr/bin/python]: /usr/bin/python2.7<br>Found possible Python library paths:<br>  /usr/local/lib/python2.7/dist-packages<br>  /usr/lib/python2.7/dist-packages<br>Please input the desired Python library path to use.  Default is [/usr/lib/python2.7/dist-packages]</p>
+<p>Using python library path: /usr/local/lib/python2.7/dist-packages</p>
+<footer><strong>https://www.tensorflow.org/install/install_sources</strong></footer></blockquote>
+
+<p>我需要安装的是Python3.5版本的，因此，需要更改默认的Python包位置，更改内容如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Please specify the location of python. [Default is &#x2F;usr&#x2F;bin&#x2F;python]: &#x2F;usr&#x2F;bin&#x2F;python3.5</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Found possible Python library paths:</span><br><span class="line">  &#x2F;usr&#x2F;local&#x2F;lib&#x2F;python3.5&#x2F;dist-packages</span><br><span class="line">  &#x2F;usr&#x2F;lib&#x2F;python3&#x2F;dist-packages</span><br><span class="line">Please input the desired Python library path to use.  Default is [&#x2F;usr&#x2F;local&#x2F;lib&#x2F;python3.5&#x2F;dist-packages]</span><br></pre></td></tr></table></figure>
+
+<p>也就是<strong>把/usr/bin/python2.7改成/usr/bin/python3.5</strong>， 如果系统默认的Python版本是3.x的，那就不需要改了。</p>
+<p>其中有一个问题：<br>Please specify optimization flags to use during compilation when bazel option “–config=opt” is specified [Default is -march=native]:</p>
+<p>这个选择默认的，直接回车</p>
+<p>接下来是一些选项，参考了网上别人的选择的，除了第一个：Do you wish to use jemalloc as the malloc implementation? [Y/n] 选择的y，其他后面的都是选择了n， </p>
+<p>最后提示：Configuration finished表示这一步完成</p>
+<h3 id="第四步"><a href="#第四步" class="headerlink" title="第四步"></a>第四步</h3><p>Build the pip package</p>
+<p><strong>把这一步完整读完再运行命令</strong></p>
+<p><strong>注意:</strong></p>
+<p>官网上这一步的介绍是这样的：</p>
+<blockquote><p>To build a pip package for TensorFlow with CPU-only support, you would typically invoke the following command:</p>
+<p>$ bazel build –config=opt //tensorflow/tools/pip_package:build_pip_package</p>
+<footer><strong>https://www.tensorflow.org/install/install_sources</strong></footer></blockquote>
+
+<p>在前言部分我们知道，我的CPU支持AVX，AVX2和FMA指令集来加快计算，所以可以在使用源码安装TensorFlow时候加入bazel参数使其支持AVX等指令集。</p>
+<p>具体内容阅读这个回答： <a href="https://stackoverflow.com/questions/41293077/how-to-compile-tensorflow-with-sse4-2-and-avx-instructions" target="_blank" rel="noopener">https://stackoverflow.com/questions/41293077/how-to-compile-tensorflow-with-sse4-2-and-avx-instructions</a></p>
+<p>因此，不使用官网介绍的命令，而是使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bazel build -c opt --copt&#x3D;-mavx --copt&#x3D;-mavx2 --copt&#x3D;-mfma --copt&#x3D;-msse4.1 --copt&#x3D;-msse4.2 -k &#x2F;&#x2F;tensorflow&#x2F;tools&#x2F;pip_package:build_pip_package --local_resources 2048,.5,1.0</span><br></pre></td></tr></table></figure>
+
+<p><strong>重要注意:</strong></p>
+<p>第一个：</p>
+<p>我这次在漫长的等待后，最后提示：<code>INFO: Build NOT completed successfully,</code> </p>
+<p>这是第二次失败，原因是缺少了<code>enum</code>这个包：ImportError: No module named enum</p>
+<p>用<code>sudo python3.5 -m pip install enum</code>后，<br>又会报错：<code>AttributeError: &#39;int&#39; object attribute &#39;__doc__&#39; is read-only</code>, </p>
+<p>在这里找到解决方法： <a href="https://github.com/tensorflow/tensorflow/issues/12491" target="_blank" rel="noopener">https://github.com/tensorflow/tensorflow/issues/12491</a></p>
+<p>不使用enum, 而是使用enum34, 因此：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo python3.5 -m pip uninstall enum</span><br><span class="line">sudo python3.5 -m pip install enum34</span><br></pre></td></tr></table></figure>
+<p>后来提示又缺少了一个mock包:ImportError: No module named mock  安装即可</p>
+<p>在运行下面命令之前，把这两个enum34和mock安装好。</p>
+<p>第二个：</p>
+<p>官网介绍：</p>
+<blockquote><p>By default, building TensorFlow from sources consumes a lot of RAM. If RAM is an issue on your system, you may limit RAM usage by specifying –local_resources 2048,.5,1.0 while invoking bazel.</p>
+<footer><strong>https://www.tensorflow.org/install/install_sources</strong></footer></blockquote>
+
+<p>意思是说，默认情况下，从源构建TensorFlow将消耗大量的RAM。 如果RAM是您系统中的问题，则可以通过在调用bazel时指定–local_resources 2048，.5,1.0来限制RAM使用。</p>
+<p>我第一次没有加<code>--local_resources 2048,.5,1.0</code>这个指令，过了好久以后系统彻底卡死了，鼠标键盘都动不了，bazel build失败了，，然后又加了这个指令限制RA使用，不过虽然系统不卡了，但是build的过程非常慢，差不多有3个多小时。。</p>
+<p><strong>其他注意：</strong></p>
+<p>第一个： 命令很长，要完整复制</p>
+<p>第二个： 这个过程非常慢，耐心等待。。。。。。。</p>
+<p>第四个： 在stackoverflow里回答者的命令不太一样，多了一个<code>--copt=-mfpmath=both</code> 和<code>--config=cuda</code>这两个，前一个不知道是什么作用，后面一个是安装GPU使用的，在第一次bazel build失败后，第二次这两个我都没有加。</p>
+<p>最后完成后的成功提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">INFO: Elapsed time: 10480.763s, Critical Path: 179.19s</span><br><span class="line">INFO: 3757 processes, local.</span><br><span class="line">INFO: Build completed successfully, 3918 total actions</span><br></pre></td></tr></table></figure>
+
+<h3 id="第五步"><a href="#第五步" class="headerlink" title="第五步"></a>第五步</h3><p>运行命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bazel-bin&#x2F;tensorflow&#x2F;tools&#x2F;pip_package&#x2F;build_pip_package &#x2F;tmp&#x2F;tensorflow_pkg</span><br></pre></td></tr></table></figure>
+
+<p>会在/tmp/tensorflow_pkg这个路径下创建一个tensorflow-1.8.0-cp35-cp35mu-linux_x86_64.whl文件</p>
+<p>然后运行命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo python3.5 -m pip install &#x2F;tmp&#x2F;tensorflow_pkg&#x2F;tensorflow-1.8.0-cp35-cp35mu-linux_x86_64.whl</span><br></pre></td></tr></table></figure>
+
+<p>顺利安装成功</p>
+<p><strong>注意：</strong></p>
+<p>在第三步，运行<code>./configure</code>命令时候，提示需要选择Python的版本及对应包的位置。我选的是Python3.5的，所以最后会创建一个tensorflow-1.8.0-cp35-cp35mu-linux_x86_64.whl文件， 如果当时选的是默认的2.7版本，那么继续执行到最后会创建一个tensorflow-1.8.0-cp27-cp27mu-linux_x86_64.whl文件，安装的也是Python2的tensorflow。</p>
+<p>如果当时选的是2.7版本，然后又想在Python3下学习tensorflow，<strong>不要</strong>运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo python3.5 -m pip install &#x2F;tmp&#x2F;tensorflow_pkg&#x2F;tensorflow-1.8.0-cp27-cp27mu-linux_x86_64.whl</span><br></pre></td></tr></table></figure>
+<p>会报错：tensorflow-1.8.0-cp27-cp27mu-linux_x86_64.whl is not a supported wheel on this platform.</p>
+<p>因为你bazel build的时候，使用的都是2.7版本对应的包，</p>
+<p><strong>正确的做法</strong>是在回到第三步，重新运行<code>./configure</code>，然后选择Python3的版本，然后重新bazel build，直到最后生成tensorflow-1.8.0-cp35-cp35m-linux_x86_64.whl(Python3.5版本)或者tensorflow-1.8.0-cp36-cp36m-linux_x86_64.whl(Python3.6版本)，最后再用pip install 对应的whl文件</p>
+<h3 id="第六步"><a href="#第六步" class="headerlink" title="第六步"></a>第六步</h3><p>最后来测试是否成功安装的tensorflow，打开终端，测试如下：</p>
+<p><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/2018-05-26%2011-03-39%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png?imageView2/0/q/75%7Cwatermark/2/text/aHVhbnlvdWNoZW4uZ2l0aHViLmlv/font/5qW35L2T/fontsize/320/fill/IzBBMEEwQQ==/dissolve/93/gravity/SouthEast/dx/10/dy/10%7Cimageslim" alt="测试tensorflow安装成功"></p>
+<p><strong>注意</strong></p>
+<p>不要在tensorflow的根目录，也就是configure同级目录下，否则会报错：<br>ImportError: Could not import tensorflow. Do not import tensorflow from its source directory; change directory to outside the TensorFlow source tree, and relaunch your Python interpreter from there.</p>
+<p>对应Python3版本，print()输出的是<code>b&#39;Hello, TensorFlow!&#39;</code>, 这个不是错误，具体解释看这里：<br><a href="https://stackoverflow.com/questions/46213441/why-do-strings-returned-by-tensorflow-show-up-with-a-b-prefix-in-python-3" target="_blank" rel="noopener">https://stackoverflow.com/questions/46213441/why-do-strings-returned-by-tensorflow-show-up-with-a-b-prefix-in-python-3</a></p>
+<p>如果有强迫症要完美输出<code>Hello, TensorFlow!</code>，可以在print的时候加一个<code>decode(&quot;utf-8&quot;)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>hello = tf.constant(<span class="string">'Hello, TensorFlow!'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sess = tf.Session()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(sess.run(hello).decode(<span class="string">'utf-8'</span>))</span><br><span class="line">Hello, TensorFlow!</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>安装结束。</p>
+</div></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://huanyouchen.github.io/2018/05/25/compile-tensorflow-from-source-with-FMA-and-avx2-instructions-on-ubuntu/';
+    this.page.identifier = '2018/05/25/compile-tensorflow-from-source-with-FMA-and-avx2-instructions-on-ubuntu/';
+    this.page.title = '通过源码编译安装TensorFlow-CPU版本支持AVX等指令集';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//huanyouchen-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//huanyouchen-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://huanyouchen-blog.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div><div class="pure-u-1 pure-u-md-4-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">幻悠尘的小窝.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

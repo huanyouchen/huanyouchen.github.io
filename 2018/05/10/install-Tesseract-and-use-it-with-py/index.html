@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="python，Java，hacker"><title>Tesseract安装使用 | 幻悠尘的小窝</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create','UA-118684665-1','auto');ga('send','pageview');
+</script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + '6630ddc4c60afb15b88971c6ab1d81a8';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Tesseract安装使用</h1><a id="logo" href="/.">幻悠尘的小窝</a><p class="description">The quieter you become,the more you are able to hear.</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/tags/"><i class="fa fa-tags"> 标签</i></a><a href="/projects/"><i class="fa fa-github"> 作品</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/message-board/"><i class="fa fa-comments"> 留言</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-4-4"><div class="content_container"><div class="post"><h1 class="post-title">Tesseract安装使用</h1><div class="post-content"><p>ubuntu: 16.04<br>Tesseract: 4.0.0-beta-1 版本</p>
+<h3 id="安装Tesseract"><a href="#安装Tesseract" class="headerlink" title="安装Tesseract"></a>安装Tesseract</h3><p>安装Tesseract 4.0.0-beta-1 版本，方法来自官方wiki: <a href="https://github.com/tesseract-ocr/tesseract/wiki" target="_blank" rel="noopener">https://github.com/tesseract-ocr/tesseract/wiki</a></p>
+<p>Tesseract 4.0.0-beta-1包含LSTM引擎和相关的训练数据。</p>
+<a id="more"></a>
+<p>安装过程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:alex-p/tesseract-ocr</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install tesseract-ocr</span><br><span class="line">sudo apt install libtesseract-dev</span><br></pre></td></tr></table></figure>
+
+<p>安装过程中我的会卡在某个地方，多等一会就可以了。</p>
+<p>检查是否安装成功：<code>tesseract --version</code>， 返回信息如下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tesseract 4.0.0-beta.1</span><br><span class="line"> leptonica-1.75.3</span><br><span class="line">  libgif 5.1.4 : libjpeg 8d (libjpeg-turbo 1.4.2) : libpng 1.2.54 : libtiff 4.0.6 : zlib 1.2.8 : libwebp 0.4.4 : libopenjp2 2.1.0</span><br><span class="line"></span><br><span class="line"> Found AVX2</span><br><span class="line"> Found AVX</span><br><span class="line"> Found SSE</span><br></pre></td></tr></table></figure>
+
+<p>安装成功，不过因为默认的没有带中文语言包，对于中文识别不了，只能识别数字和英文，所以下一步安装中文语言包。</p>
+<p>所有语言包地址： <a href="https://github.com/tesseract-ocr/tessdata_best" target="_blank" rel="noopener">https://github.com/tesseract-ocr/tessdata_best</a></p>
+<p>中文语言包地址：<a href="https://github.com/tesseract-ocr/tessdata_best/blob/master/chi_sim.traineddata" target="_blank" rel="noopener">https://github.com/tesseract-ocr/tessdata_best/blob/master/chi_sim.traineddata</a></p>
+<p>将中文语言包下载下来，放到<code>/usr/share/tesseract-ocr/4.00/tessdata/</code>这个目录下，然后用<code>tesseract --list-langs</code>检查安装过的语言包：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tesseract --list-langs</span><br><span class="line">List of available languages (3):</span><br><span class="line">eng</span><br><span class="line">chi_sim</span><br><span class="line">osd</span><br></pre></td></tr></table></figure>
+
+<h3 id="小测试"><a href="#小测试" class="headerlink" title="小测试"></a>小测试</h3><p>将Tesseract和Python结合起来，还需要安装两个包，一个是<code>pillow</code>，另一个是<code>pytesseract</code>，用pip install即可</p>
+<p>要测试的图片：</p>
+<p><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/orc-test1.jpg" alt="test1.jpg"><br><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/orc-test2.png" alt="test2.png"><br><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/orc-test3.jpg" alt="test3.jpg"><br><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/orc-test4.png" alt="test4.png"></p>
+<p>分别是4张测试图片，最后一张是中文的。</p>
+<p>测试代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> pytesseract</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Languages</span>:</span></span><br><span class="line">    CHS = <span class="string">'chi_sim'</span></span><br><span class="line">    ENG = <span class="string">'eng'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">img_to_str</span><span class="params">(image_path, lang=Languages.ENG)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> pytesseract.image_to_string(Image.open(image_path), lang)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(img_to_str(<span class="string">'test1.jpg'</span>, lang=Languages.ENG))</span><br><span class="line">print(img_to_str(<span class="string">'test2.png'</span>, lang=Languages.ENG))</span><br><span class="line">print(img_to_str(<span class="string">'test3.jpg'</span>, lang=Languages.ENG))</span><br><span class="line">print(img_to_str(<span class="string">'test4.png'</span>, lang=Languages.CHS))</span><br></pre></td></tr></table></figure>
+
+<p>测试结果：</p>
+<p><img src="https://huanyouchen-1252081928.cos.ap-shanghai.myqcloud.com/2018-05-10%2020-27-54%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png?imageView2/0/q/75%7Cwatermark/2/text/aHVhbnlvdWNoZW4uZ2l0aHViLmlv/font/5qW35L2T/fontsize/320/fill/IzBBMEEwQQ==/dissolve/93/gravity/SouthEast/dx/10/dy/10%7Cimageslim" alt="测试结果"></p>
+<p>可以看到测试的有些是错误的，不过大部分还是正确的。</p>
+</div></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://huanyouchen.github.io/2018/05/10/install-Tesseract-and-use-it-with-py/';
+    this.page.identifier = '2018/05/10/install-Tesseract-and-use-it-with-py/';
+    this.page.title = 'Tesseract安装使用';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//huanyouchen-blog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//huanyouchen-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://huanyouchen-blog.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div><div class="pure-u-1 pure-u-md-4-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">幻悠尘的小窝.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
