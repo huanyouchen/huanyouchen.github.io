@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://huanyouchen.github.io/2019/02/25/fanqiang-log/</loc>
+    <lastmod>2020-06-29</lastmod>
+  </url>  <url>
+    <loc>http://huanyouchen.github.io/2018/06/27/leetcode-1-two-sum/</loc>
+    <lastmod>2020-06-29</lastmod>
+  </url>  <url>
+    <loc>http://huanyouchen.github.io/2018/05/11/django-error-set-object-is-not-reversible/</loc>
+    <lastmod>2020-06-26</lastmod>
+  </url>  <url>
     <loc>http://huanyouchen.github.io/2020/06/26/mac-beautify-terminal-based-on-iTerm2-oh-my-zsh/</loc>
     <lastmod>2020-06-26</lastmod>
   </url>  <url>
@@ -91,9 +100,6 @@
     <loc>http://huanyouchen.github.io/2019/09/07/mysql-the-difference-between-insert-into-ignore-replace-into/</loc>
     <lastmod>2019-09-08</lastmod>
   </url>  <url>
-    <loc>http://huanyouchen.github.io/2019/02/25/fanqiang-log/</loc>
-    <lastmod>2019-08-09</lastmod>
-  </url>  <url>
     <loc>http://huanyouchen.github.io/2019/08/08/Upgrade-MySQL-version-from-5.7-to-8.0-under-ubuntu18.04/</loc>
     <lastmod>2019-08-08</lastmod>
   </url>  <url>
@@ -154,9 +160,6 @@
     <loc>http://huanyouchen.github.io/2018/05/26/django-connect-mysql-error-operationalerror-1045-access-denied-for/</loc>
     <lastmod>2019-02-25</lastmod>
   </url>  <url>
-    <loc>http://huanyouchen.github.io/2018/05/11/django-error-set-object-is-not-reversible/</loc>
-    <lastmod>2019-02-25</lastmod>
-  </url>  <url>
     <loc>http://huanyouchen.github.io/2018/04/20/hello-hangzhou/</loc>
     <lastmod>2019-02-25</lastmod>
   </url>  <url>
@@ -173,9 +176,6 @@
     <lastmod>2019-02-25</lastmod>
   </url>  <url>
     <loc>http://huanyouchen.github.io/2018/04/28/install-readline-easy-install-error-free-invalid-pointer/</loc>
-    <lastmod>2019-02-25</lastmod>
-  </url>  <url>
-    <loc>http://huanyouchen.github.io/2018/06/27/leetcode-1-two-sum/</loc>
     <lastmod>2019-02-25</lastmod>
   </url>  <url>
     <loc>http://huanyouchen.github.io/2018/06/29/leetcode-561-array-partition-i/</loc>

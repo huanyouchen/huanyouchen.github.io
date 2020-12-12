@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://huanyouchen.github.io/message-board/index.html</loc>
+    
+    <lastmod>2020-11-22T09:22:27.031Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://huanyouchen.github.io/2019/02/25/fanqiang-log/</loc>
+    
+    <lastmod>2020-06-29T15:46:29.725Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://huanyouchen.github.io/2018/06/27/leetcode-1-two-sum/</loc>
+    
+    <lastmod>2020-06-29T15:26:57.230Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://huanyouchen.github.io/2018/05/11/django-error-set-object-is-not-reversible/</loc>
+    
+    <lastmod>2020-06-26T12:29:51.154Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://huanyouchen.github.io/2020/06/26/mac-beautify-terminal-based-on-iTerm2-oh-my-zsh/</loc>
     
     <lastmod>2020-06-26T12:24:30.777Z</lastmod>
@@ -12,13 +40,6 @@
     <loc>http://huanyouchen.github.io/about/index.html</loc>
     
     <lastmod>2020-06-25T13:55:39.469Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://huanyouchen.github.io/message-board/index.html</loc>
-    
-    <lastmod>2020-06-25T13:26:14.865Z</lastmod>
     
   </url>
   
@@ -226,13 +247,6 @@
   </url>
   
   <url>
-    <loc>http://huanyouchen.github.io/2019/02/25/fanqiang-log/</loc>
-    
-    <lastmod>2019-08-09T13:44:26.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://huanyouchen.github.io/2019/08/08/Upgrade-MySQL-version-from-5.7-to-8.0-under-ubuntu18.04/</loc>
     
     <lastmod>2019-08-08T03:57:35.000Z</lastmod>
@@ -387,13 +401,6 @@
   </url>
   
   <url>
-    <loc>http://huanyouchen.github.io/2018/05/11/django-error-set-object-is-not-reversible/</loc>
-    
-    <lastmod>2019-02-25T14:11:39.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://huanyouchen.github.io/2018/04/20/hello-hangzhou/</loc>
     
     <lastmod>2019-02-25T14:11:39.000Z</lastmod>
@@ -430,13 +437,6 @@
   
   <url>
     <loc>http://huanyouchen.github.io/2018/04/28/install-readline-easy-install-error-free-invalid-pointer/</loc>
-    
-    <lastmod>2019-02-25T14:11:39.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://huanyouchen.github.io/2018/06/27/leetcode-1-two-sum/</loc>
     
     <lastmod>2019-02-25T14:11:39.000Z</lastmod>
     
